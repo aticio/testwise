@@ -205,18 +205,6 @@ class Testwise:
         result = {"netProfit": self.netProfit, "netProfitPercent": self.getNetProfitPercent(), "grossProfit": self.grossProfit, "grossLoss": self.grossLoss, "maxDrawdown": self.maxDrawdown, "maxDrawdownRate": self.getMaxDrawdownRate(), "riskRewardRatio": self.getRiskRewardRatio(), "profitFactor": self.getProfitFactor(), "returnOnCapital": self.getReturnOnCapital(), "maxCapitalRequired": self.getMaxCapitalRequired(), "totalTrades": self.totalTrades, "numberOfWinningTrades": self.numberOfWinningTraders, "numberOfLosingTrades": self.numberOfLosingTrades, "largestWinningTrade": self.getLargestWinningTrade(), "largestLosingTrade": self.getLargestLosingTrade()}
         return result
 
-    def __updateDrawdownRecord(self, date):
-        """Records drawdon to calculate maximum drawdown
-
-        Arguments:
-            date {string} -- date of drawdown
-        """        
-        maxnp = self.netProfitRecord[0]
-        for np in self.netProfitRecord:
-            if np[1] > maxnp[1]:
-                maxnp = np
-        self.maxDrawdownRecord.append((maxnp[0], self.netProfitRecord[-1][0], self.netProfitRecord[-1][-1] - maxnp[1]))
-
     def getNetProfit(self):
         """Net profit
 
@@ -353,18 +341,6 @@ class Testwise:
                     minnpr = self.netProfitRecord[i]
         return minnpr
 
-    def __calculatePercent(self, nominator, denominator):
-        """Calculates percent value with given nominator and denominator
-
-        Arguments:
-            nominator {float} -- nominator
-            denominator {float} -- denominator
-
-        Returns:
-            float -- percent value
-        """        
-        return (100 * nominator) / denominator
-
     def writeTradesToCSV(self, name="trades"):
         """Write all transactions to a csv file
 
@@ -391,3 +367,27 @@ class Testwise:
         """        
         for p in self.positions:
             print(p)
+
+    def __updateDrawdownRecord(self, date):
+        """Records drawdon to calculate maximum drawdown
+
+        Arguments:
+            date {string} -- date of drawdown
+        """        
+        maxnp = self.netProfitRecord[0]
+        for np in self.netProfitRecord:
+            if np[1] > maxnp[1]:
+                maxnp = np
+        self.maxDrawdownRecord.append((maxnp[0], self.netProfitRecord[-1][0], self.netProfitRecord[-1][-1] - maxnp[1]))
+    
+    def __calculatePercent(self, nominator, denominator):
+        """Calculates percent value with given nominator and denominator
+
+        Arguments:
+            nominator {float} -- nominator
+            denominator {float} -- denominator
+
+        Returns:
+            float -- percent value
+        """        
+        return (100 * nominator) / denominator
