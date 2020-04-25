@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
-with open("README.md","r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
     name="testwise",
-    version="0.0.6",
+    version="0.0.7",
     description="A backtester (backtest helper) for testing my trading strategies.",
     packages=find_packages(),
     classifiers=[
