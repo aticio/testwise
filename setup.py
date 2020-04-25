@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="testwise",
-    version="0.0.7",
+    version="0.0.8",
     description="A backtester (backtest helper) for testing my trading strategies.",
     packages=find_packages(),
     classifiers=[
