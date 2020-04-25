@@ -4,10 +4,21 @@
 
 A backtester (backtest helper) for testing my trading strategies.
 
-## Installation
+## Installation & Usage
 
 Run the following to install:
 
 ```python
 pip install testwise
+```
+
+Then, initialize an instance of `testwise`as follows to use it:
+
+```
+from testwise import Testwise
+tw = Testwise()
+
+# Call the methods like
+net_profit = tw.getNetProfit
+
 ```
