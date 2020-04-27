@@ -92,7 +92,7 @@ class Testwise:
         Keyword Arguments:
             tptaken {bool} -- True if take profit is taken with this particular transaction (default: {False})
         """
-        if self.current_open_pos is None:
+        if self.current_open_pos is not None:
             adjusted_price = price - self.slippage
             position = {"type": "exit long", "date":date, "price": price, "adj_price": adjusted_price, "qty": share}
             self.positions.append(position)
