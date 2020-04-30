@@ -1,6 +1,7 @@
 """Testwise"""
 import statistics
 import csv
+import copy
 import matplotlib.pyplot as plt
 
 class Testwise:
@@ -76,7 +77,7 @@ class Testwise:
                 self.cash = self.cash - (adjusted_price * share) - (adjusted_price * share)
 
             self.total_trades = self.total_trades + 1
-            self.current_open_pos = position
+            self.current_open_pos = copy.copy(position)
             self.pos = 1
         else:
             print("Position already open")
@@ -150,7 +151,7 @@ class Testwise:
                 self.cash = self.cash - (adjusted_price * share) - (adjusted_price * share)
 
             self.total_trades = self.total_trades + 1
-            self.current_open_pos = position
+            self.current_open_pos = copy.copy(position)
             self.pos = -1
         else:
             print("Position already open")
