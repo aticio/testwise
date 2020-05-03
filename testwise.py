@@ -215,11 +215,12 @@ class Testwise:
         result = {
             "net_profit": self.net_profit, "net_profit_percent": self.get_net_profit_percent(),
             "gross_profit": self.gross_profit, "gross_loss": self.gross_loss, "max_drawdown": self.max_drawdown,
-            "max_drawdown_rate": self.get_max_drawdown_rate(), "risk_reward_ratio": self.get_risk_reward_ratio(),
-            "profit_factor": self.get_profit_factor(), "return_on_capital": self.get_return_on_capital(),
-            "max_capital_required": self.get_max_capital_required(), "total_trades": self.total_trades,
-            "number_of_winning_trades": self.number_of_winning_traders, "number_of_losing_trades": self.number_of_losing_trades,
-            "largest_winning_trade": self.get_largest_winning_trade(), "largest_losing_trade": self.get_largest_losing_trade()}
+            "max_drawdown_rate": self.get_max_drawdown_rate(), "win_rate": self.get_win_rate(),
+            "risk_reward_ratio": self.get_risk_reward_ratio(), "profit_factor": self.get_profit_factor(),
+            "return_on_capital": self.get_return_on_capital(), "max_capital_required": self.get_max_capital_required(),
+            "total_trades": self.total_trades, "number_of_winning_trades": self.number_of_winning_traders,
+            "number_of_losing_trades": self.number_of_losing_trades, "largest_winning_trade": self.get_largest_winning_trade(),
+            "largest_losing_trade": self.get_largest_losing_trade()}
         return result
 
     def get_net_profit(self):
@@ -262,7 +263,7 @@ class Testwise:
         if self.get_max_drawdown() == 0:
             return 0
         else:
-            mddr = self.net_profit / self.get_max_drawdown()
+            mddr = self.net_profit / abs(self.get_max_drawdown())
             return mddr
 
     def get_risk_reward_ratio(self):
