@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="testwise",
-    version="0.0.14",
+    version="0.0.15",
     description="A backtester (backtest helper) for testing my trading strategies.",
     py_modules=["testwise"],
     classifiers=[

@@ -291,7 +291,7 @@ class Testwise:
         Returns:
             float -- maximum capital required
         """
-        mcr = self.initial_capital + self.get_max_drawdown()
+        mcr = self.initial_capital + abs(self.get_max_drawdown())
         return mcr
 
     def get_return_on_capital(self):
