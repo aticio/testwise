@@ -274,7 +274,7 @@ class Testwise:
         """
         risk = self.gross_profit / self.number_of_winning_traders
         reward = self.gross_loss / self.number_of_losing_trades
-        return reward / risk
+        return risk / reward
 
     def get_win_rate(self):
         """Calculates win rate
