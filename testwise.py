@@ -64,6 +64,9 @@ class Testwise:
         if self.current_open_pos is None:
             adjusted_price = price + self.slippage
 
+            if adjusted_price * share > self.equity:
+                share = self.equity / adjusted_price
+
             position = {"type": "entry long", "date": date, "price": price,
                         "adj_price": adjusted_price, "qty": share,
                         "tp": price + (self.limit_factor * current_atr),
@@ -138,6 +141,10 @@ class Testwise:
             """
         if self.current_open_pos is None:
             adjusted_price = price - self.slippage
+
+            if adjusted_price * share > self.equity:
+                share = self.equity / adjusted_price
+
             position = {
                 "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
                 "qty": share, "tp": price - (self.limit_factor * current_atr),
