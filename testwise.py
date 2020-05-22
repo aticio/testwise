@@ -65,7 +65,7 @@ class Testwise:
             adjusted_price = price + self.slippage
 
             position = {"type": "entry long", "date": date, "price": price,
-                        "adjPrice": adjusted_price, "qty": share,
+                        "adj_price": adjusted_price, "qty": share,
                         "tp": price + (self.limit_factor * current_atr),
                         "sl": price - (self.risk_factor * current_atr), "tptaken": False}
             self.positions.append(position)
