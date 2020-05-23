@@ -9,7 +9,7 @@ class Testwise:
     """
     def __init__(
             self, initial_capital=100000, commission=0, slippage=0, risk_factor=1.2,
-            limit_factor=2.3, position_risk=0.02, take_profit_ratio=0.5):
+            limit_factor=2.3, position_risk=0.02, take_profit_ratio=0.5, use_margin=False, margin_factor=3):
         self.initial_capital = initial_capital
         self.commission = commission
         self.slippage = slippage
@@ -17,6 +17,8 @@ class Testwise:
         self.limit_factor = limit_factor
         self.position_risk = position_risk
         self.take_profit_ratio = take_profit_ratio
+        self.use_margin = use_margin
+        self.margin_factor = margin_factor
 
         self.equity = initial_capital
         self.cash = initial_capital
@@ -64,8 +66,12 @@ class Testwise:
         if self.current_open_pos is None:
             adjusted_price = price + self.slippage
 
-            if adjusted_price * share > self.equity:
-                share = self.equity / adjusted_price
+            if self.use_margin:
+                if adjusted_price * share > self.equity * self.margin_factor:
+                    share = ((self.equity * self.margin_factor) - (self.equity * self.position_risk))  / adjusted_price
+            else:
+                if adjusted_price * share > self.equity:
+                    share = self.equity / adjusted_price
 
             position = {"type": "entry long", "date": date, "price": price,
                         "adj_price": adjusted_price, "qty": share,
@@ -142,8 +148,12 @@ class Testwise:
         if self.current_open_pos is None:
             adjusted_price = price - self.slippage
 
-            if adjusted_price * share > self.equity:
-                share = self.equity / adjusted_price
+            if self.use_margin:
+                if adjusted_price * share > self.equity * self.margin_factor:
+                    share = ((self.equity * self.margin_factor) - (self.equity * self.position_risk))  / adjusted_price
+            else:
+                if adjusted_price * share > self.equity:
+                    share = self.equity / adjusted_price
 
             position = {
                 "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
