@@ -241,6 +241,15 @@ class Testwise:
         """
         self.current_open_pos["sl"] = self.current_open_pos["price"]
 
+    def set_trailing_stop(self, price, ts_atr):
+        """Setting trailing stop
+
+        Args:
+            price (float): close price when trailing stop level reached
+            ts_atr (float): atr value of position opening
+        """
+        self.current_open_pos["sl"] = price - ts_atr
+    
     def get_result(self):
         """Generates backtest results
 
