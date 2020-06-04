@@ -82,7 +82,8 @@ class Testwise:
                             "adj_price": adjusted_price, "qty": share,
                             "tp": price + (self.limit_factor * current_atr),
                             "sl": price - (self.risk_factor * current_atr), "tptaken": False,
-                            "ts_active": price + (self.trailing_stop_activation_ratio * current_atr)}
+                            "ts_active": price + (self.trailing_stop_activation_ratio * current_atr),
+                            "ts_atr": current_atr}
             else:
                 position = {"type": "entry long", "date": date, "price": price,
                             "adj_price": adjusted_price, "qty": share,
@@ -171,7 +172,8 @@ class Testwise:
                     "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
                     "qty": share, "tp": price - (self.limit_factor * current_atr),
                     "sl": price + (self.risk_factor * current_atr), "tptaken": False,
-                    "ts_active": price + (self.trailing_stop_activation_ratio * current_atr)}
+                    "ts_active": price + (self.trailing_stop_activation_ratio * current_atr),
+                    "ts_atr": current_atr}
             else:
                 position = {
                     "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
