@@ -41,16 +41,17 @@ class Testwise:
         self.current_open_pos = None
         self.positions = []
 
-    def calculate_share(self, current_atr_pips):
+    def calculate_share(self, current_atr, current_atr_pips):
         """Calculates how many shares to buy
 
         Arguments:
-            current_atr_pips {int} -- atr in pips
+            current_atr {float} -- atr
+            current_atr_pips {float} -- atr in pips
 
         Returns:
             float -- shares to buy
         """
-        risk = self.equity * self.position_risk
+        risk = self.equity * self.position_risk * round(current_atr_pips / current_atr)
         share = risk / (self.risk_factor * current_atr_pips)
         return share
 
