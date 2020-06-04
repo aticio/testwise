@@ -9,7 +9,8 @@ class Testwise:
     """
     def __init__(
             self, initial_capital=100000, commission=0, slippage=0, risk_factor=1.2,
-            limit_factor=2.3, position_risk=0.02, take_profit_ratio=0.5, use_margin=False, margin_factor=3):
+            limit_factor=2.3, position_risk=0.02, take_profit_ratio=0.5, use_margin=False, margin_factor=3,
+            use_trailing_stop=True, trailing_stop_activation_ratio=2):
         self.initial_capital = initial_capital
         self.commission = commission
         self.slippage = slippage
@@ -19,6 +20,8 @@ class Testwise:
         self.take_profit_ratio = take_profit_ratio
         self.use_margin = use_margin
         self.margin_factor = margin_factor
+        self.use_trailing_stop = use_trailing_stop
+        self.trailing_stop_activation_ratio = trailing_stop_activation_ratio
 
         self.equity = initial_capital
         self.cash = initial_capital
@@ -74,10 +77,17 @@ class Testwise:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
 
-            position = {"type": "entry long", "date": date, "price": price,
-                        "adj_price": adjusted_price, "qty": share,
-                        "tp": price + (self.limit_factor * current_atr),
-                        "sl": price - (self.risk_factor * current_atr), "tptaken": False}
+            if self.use_trailing_stop:
+                position = {"type": "entry long", "date": date, "price": price,
+                            "adj_price": adjusted_price, "qty": share,
+                            "tp": price + (self.limit_factor * current_atr),
+                            "sl": price - (self.risk_factor * current_atr), "tptaken": False,
+                            "ts_active": price + (self.trailing_stop_activation_ratio * current_atr)}
+            else:
+                position = {"type": "entry long", "date": date, "price": price,
+                            "adj_price": adjusted_price, "qty": share,
+                            "tp": price + (self.limit_factor * current_atr),
+                            "sl": price - (self.risk_factor * current_atr), "tptaken": False}
             self.positions.append(position)
 
             if self.commission != 0:
@@ -156,10 +166,17 @@ class Testwise:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
 
-            position = {
-                "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
-                "qty": share, "tp": price - (self.limit_factor * current_atr),
-                "sl": price + (self.risk_factor * current_atr), "tptaken": False}
+            if self.use_trailing_stop:
+                position = {
+                    "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
+                    "qty": share, "tp": price - (self.limit_factor * current_atr),
+                    "sl": price + (self.risk_factor * current_atr), "tptaken": False,
+                    "ts_active": price + (self.trailing_stop_activation_ratio * current_atr)}
+            else:
+                position = {
+                    "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
+                    "qty": share, "tp": price - (self.limit_factor * current_atr),
+                    "sl": price + (self.risk_factor * current_atr), "tptaken": False}
             self.positions.append(position)
 
             if self.commission != 0:
