@@ -250,7 +250,10 @@ class Testwise:
             price (float): close price when trailing stop level reached
             ts_atr (float): atr value of position opening
         """
-        self.current_open_pos["sl"] = price - ts_atr
+        if self.pos == 1:
+            self.current_open_pos["sl"] = price - ts_atr
+        elif self.pos == -1:
+            self.current_open_pos["sl"] = price + ts_atr
     
     def get_result(self):
         """Generates backtest results
