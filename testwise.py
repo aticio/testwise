@@ -9,8 +9,8 @@ class Testwise:
     """
     def __init__(
             self, initial_capital=100000, commission=0, slippage=0, risk_factor=1.2,
-            limit_factor=2.3, position_risk=0.02, take_profit_ratio=0.5, use_margin=False, margin_factor=3,
-            use_trailing_stop=True, trailing_stop_activation_ratio=2):
+            limit_factor=2.3, position_risk=0.02, take_profit_ratio=0.01, use_margin=False, margin_factor=3,
+            use_trailing_stop=True, trailing_stop_activation_ratio=2, risk_approach="nnfx"):
         self.initial_capital = initial_capital
         self.commission = commission
         self.slippage = slippage
@@ -22,6 +22,7 @@ class Testwise:
         self.margin_factor = margin_factor
         self.use_trailing_stop = use_trailing_stop
         self.trailing_stop_activation_ratio = trailing_stop_activation_ratio
+        self.risk_approach = risk_approach
 
         self.equity = initial_capital
         self.cash = initial_capital
@@ -44,8 +45,8 @@ class Testwise:
         self.current_open_pos = None
         self.positions = []
 
-    def calculate_share(self, current_atr, current_atr_pips):
-        """Calculates how many shares to buy
+    def calculate_share_byatr(self, current_atr, current_atr_pips):
+        """Calculates how many shares to buy in nnfx way
 
         Arguments:
             current_atr {float} -- atr
@@ -56,6 +57,19 @@ class Testwise:
         """
         risk = self.equity * self.position_risk * round(current_atr_pips / current_atr)
         share = risk / (self.risk_factor * current_atr_pips)
+        return share
+
+    def calculate_share_manuel(self, pips):
+        """Calculates how many shares to buy in ehlres way
+
+        Args:
+            pips (float): number of pips to put stop loss
+
+        Returns:
+            float -- shares to buy
+        """
+        risk = self.equity * self.position_risk
+        share = risk / pips
         return share
 
     def entry_long(self, date, price, share, current_atr):
@@ -77,18 +91,32 @@ class Testwise:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
 
-            if self.use_trailing_stop:
-                position = {"type": "entry long", "date": date, "price": price,
-                            "adj_price": adjusted_price, "qty": share,
-                            "tp": price + (self.limit_factor * current_atr),
-                            "sl": price - (self.risk_factor * current_atr), "tptaken": False,
-                            "ts_active": price + (self.trailing_stop_activation_ratio * current_atr),
-                            "ts_atr": current_atr}
-            else:
-                position = {"type": "entry long", "date": date, "price": price,
-                            "adj_price": adjusted_price, "qty": share,
-                            "tp": price + (self.limit_factor * current_atr),
-                            "sl": price - (self.risk_factor * current_atr), "tptaken": False}
+            if self.risk_approach == "nnfx":
+                if self.use_trailing_stop:
+                    position = {"type": "entry long", "date": date, "price": price,
+                                "adj_price": adjusted_price, "qty": share,
+                                "tp": price + (self.limit_factor * current_atr),
+                                "sl": price - (self.risk_factor * current_atr), "tptaken": False,
+                                "ts_active": price + (self.trailing_stop_activation_ratio * current_atr),
+                                "ts_atr": current_atr}
+                else:
+                    position = {"type": "entry long", "date": date, "price": price,
+                                "adj_price": adjusted_price, "qty": share,
+                                "tp": price + (self.limit_factor * current_atr),
+                                "sl": price - (self.risk_factor * current_atr), "tptaken": False}
+            elif self.risk_approach == "ehlers":
+                if self.use_trailing_stop:
+                    position = {"type": "entry long", "date": date, "price": price,
+                    "adj_price": adjusted_price, "qty": share,
+                    "tp": (1 + self.take_profit_ratio) * price,
+                    "sl": (1 - self.position_risk) * price, "tptaken": False,
+                    "ts_active": price + (self.trailing_stop_activation_ratio * current_atr),
+                    "ts_atr": current_atr}
+                else:
+                    position = {"type": "entry long", "date": date, "price": price,
+                                "adj_price": adjusted_price, "qty": share,
+                                "tp": (1 + self.take_profit_ratio) * price,
+                                "sl": (1 - self.position_risk) * price, "tptaken": False}
             self.positions.append(position)
 
             if self.commission != 0:
@@ -167,18 +195,32 @@ class Testwise:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
 
-            if self.use_trailing_stop:
-                position = {
-                    "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
-                    "qty": share, "tp": price - (self.limit_factor * current_atr),
-                    "sl": price + (self.risk_factor * current_atr), "tptaken": False,
-                    "ts_active": price - (self.trailing_stop_activation_ratio * current_atr),
-                    "ts_atr": current_atr}
-            else:
-                position = {
-                    "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
-                    "qty": share, "tp": price - (self.limit_factor * current_atr),
-                    "sl": price + (self.risk_factor * current_atr), "tptaken": False}
+            if self.risk_approach == "nnfx":
+                if self.use_trailing_stop:
+                    position = {
+                        "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
+                        "qty": share, "tp": price - (self.limit_factor * current_atr),
+                        "sl": price + (self.risk_factor * current_atr), "tptaken": False,
+                        "ts_active": price - (self.trailing_stop_activation_ratio * current_atr),
+                        "ts_atr": current_atr}
+                else:
+                    position = {
+                        "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
+                        "qty": share, "tp": price - (self.limit_factor * current_atr),
+                        "sl": price + (self.risk_factor * current_atr), "tptaken": False}
+            elif self.risk_approach == "ehlers":
+                if self.use_trailing_stop:
+                    position = {
+                        "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
+                        "qty": share, "tp": (1 - self.take_profit_ratio) * price,
+                        "sl": (1 + self.position_risk) * price, "tptaken": False,
+                        "ts_active": price - (self.trailing_stop_activation_ratio * current_atr),
+                        "ts_atr": current_atr}
+                else:
+                    position = {
+                        "type": "entry short", "date": date, "price": price, "adj_price": adjusted_price,
+                        "qty": share, "tp": (1 - self.take_profit_ratio) * price,
+                        "sl": (1 + self.position_risk) * price, "tptaken": False}
             self.positions.append(position)
 
             if self.commission != 0:
