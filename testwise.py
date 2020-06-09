@@ -2,6 +2,7 @@
 import statistics
 import csv
 import copy
+import math
 import matplotlib.pyplot as plt
 
 class Testwise:
@@ -59,7 +60,7 @@ class Testwise:
         share = risk / (self.risk_factor * current_atr_pips)
         return share
 
-    def calculate_share_manuel(self, pips):
+    def calculate_share_manuel(self, price):
         """Calculates how many shares to buy in ehlres way
 
         Args:
@@ -68,8 +69,21 @@ class Testwise:
         Returns:
             float -- shares to buy
         """
+        diff = abs(price - ((1 - self.position_risk) * price))
+
+        ldiff = int(diff)
+        ldigits = 0
+        if ldiff == 0:
+            ldigits = 1
+        else:
+            ldigits = int(math.log10(ldiff))+1
+        rdigits = 5 - ldigits
+        if rdigits == 0:
+            rdigits = 1
+        diff_pips = diff * pow(10, rdigits)
+
         risk = self.equity * self.position_risk
-        share = risk / pips
+        share = risk / diff_pips
         return share
 
     def entry_long(self, date, price, share, current_atr):
