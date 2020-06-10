@@ -9,7 +9,7 @@ class Testwise:
     """
     def __init__(
             self, initial_capital=100000, commission=0, slippage=0, risk_factor=1.5,
-            limit_factor=1, position_risk=0.02, take_profit_ratio=0.01, use_margin=True, margin_factor=3,
+            limit_factor=1, position_risk=0.02, use_margin=True, margin_factor=3,
             use_trailing_stop=False, trailing_stop_activation_ratio=2):
         self.initial_capital = initial_capital
         self.commission = commission
@@ -17,7 +17,6 @@ class Testwise:
         self.risk_factor = risk_factor
         self.limit_factor = limit_factor
         self.position_risk = position_risk
-        self.take_profit_ratio = take_profit_ratio
         self.use_margin = use_margin
         self.margin_factor = margin_factor
         self.use_trailing_stop = use_trailing_stop
@@ -124,11 +123,11 @@ class Testwise:
 
             if adjusted_price - self.current_open_pos["price"] > 0:
                 self.gross_profit = self.gross_profit + ((adjusted_price - self.current_open_pos["price"]) * share)
-                if not tptaken:
+                if self.current_open_pos["tptaken"]:
                     self.number_of_winning_traders = self.number_of_winning_traders + 1
             else:
                 self.gross_loss = self.gross_loss + abs(((adjusted_price - self.current_open_pos["price"]) * share))
-                if not tptaken:
+                if self.current_open_pos["tptaken"]:
                     self.number_of_losing_trades = self.number_of_losing_trades + 1
 
             self.net_profit_record.append((date, self.equity - self.initial_capital))
@@ -214,11 +213,11 @@ class Testwise:
 
             if adjusted_price - self.current_open_pos["price"] < 0:
                 self.gross_profit = self.gross_profit + abs(((adjusted_price - self.current_open_pos["price"]) * share))
-                if not tptaken:
+                if self.current_open_pos["tptaken"]:
                     self.number_of_winning_traders = self.number_of_winning_traders + 1
             else:
                 self.gross_loss = self.gross_loss + ((adjusted_price - self.current_open_pos["price"]) * share)
-                if not tptaken:
+                if self.current_open_pos["tptaken"]:
                     self.number_of_losing_trades = self.number_of_losing_trades + 1
 
             self.net_profit_record.append((date, self.equity - self.initial_capital))
