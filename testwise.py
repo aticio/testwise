@@ -123,11 +123,11 @@ class Testwise:
 
             if adjusted_price - self.current_open_pos["price"] > 0:
                 self.gross_profit = self.gross_profit + ((adjusted_price - self.current_open_pos["price"]) * share)
-                if self.current_open_pos["tptaken"]:
+                if not self.current_open_pos["tptaken"]:
                     self.number_of_winning_traders = self.number_of_winning_traders + 1
             else:
                 self.gross_loss = self.gross_loss + abs(((adjusted_price - self.current_open_pos["price"]) * share))
-                if self.current_open_pos["tptaken"]:
+                if not self.current_open_pos["tptaken"]:
                     self.number_of_losing_trades = self.number_of_losing_trades + 1
 
             self.net_profit_record.append((date, self.equity - self.initial_capital))
@@ -213,11 +213,11 @@ class Testwise:
 
             if adjusted_price - self.current_open_pos["price"] < 0:
                 self.gross_profit = self.gross_profit + abs(((adjusted_price - self.current_open_pos["price"]) * share))
-                if self.current_open_pos["tptaken"]:
+                if not self.current_open_pos["tptaken"]:
                     self.number_of_winning_traders = self.number_of_winning_traders + 1
             else:
                 self.gross_loss = self.gross_loss + ((adjusted_price - self.current_open_pos["price"]) * share)
-                if self.current_open_pos["tptaken"]:
+                if not self.current_open_pos["tptaken"]:
                     self.number_of_losing_trades = self.number_of_losing_trades + 1
 
             self.net_profit_record.append((date, self.equity - self.initial_capital))
