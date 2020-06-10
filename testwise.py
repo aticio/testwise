@@ -118,8 +118,8 @@ class Testwise:
             position = {"type": "exit long", "date":date, "price": price, "adj_price": adjusted_price, "qty": share}
             self.positions.append(position)
 
-            self.equity = self.equity + ((adjusted_price - self.current_open_pos["price"]) * share) - (abs(adjusted_price - self.current_open_pos["price"]) * share * self.commission)
-            self.cash = self.cash + ((adjusted_price - self.current_open_pos["price"]) * share) - (abs(adjusted_price - self.current_open_pos["price"]) * share * self.commission)
+            self.equity = self.equity + ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
+            self.cash = self.cash + ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
 
             if adjusted_price - self.current_open_pos["price"] > 0:
                 self.gross_profit = self.gross_profit + ((adjusted_price - self.current_open_pos["price"]) * share)
@@ -208,8 +208,8 @@ class Testwise:
             position = {"type": "exit short", "date":date, "price": price, "adj_price": adjusted_price, "qty": share}
             self.positions.append(position)
 
-            self.equity = self.equity - ((adjusted_price - self.current_open_pos["price"]) * share) - (abs(price - self.current_open_pos["price"]) * share * self.commission)
-            self.cash = self.cash - ((adjusted_price - self.current_open_pos["price"]) * share) - (abs(price - self.current_open_pos["price"]) * share * self.commission)
+            self.equity = self.equity - ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
+            self.cash = self.cash - ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
 
             if adjusted_price - self.current_open_pos["price"] < 0:
                 self.gross_profit = self.gross_profit + abs(((adjusted_price - self.current_open_pos["price"]) * share))
@@ -267,8 +267,8 @@ class Testwise:
             "risk_reward_ratio": self.get_risk_reward_ratio(), "profit_factor": self.get_profit_factor(),
             "return_on_capital": self.get_return_on_capital(), "max_capital_required": self.get_max_capital_required(),
             "total_trades": self.total_trades, "number_of_winning_trades": self.number_of_winning_traders,
-            "number_of_losing_trades": self.number_of_losing_trades, "largest_winning_trade": self.get_largest_winning_trade(),
-            "largest_losing_trade": self.get_largest_losing_trade()}
+            "sortino_ratio": self.get_sortino_ratio(), "number_of_losing_trades": self.number_of_losing_trades,
+            "largest_winning_trade": self.get_largest_winning_trade(), "largest_losing_trade": self.get_largest_losing_trade()}
         return result
 
     def get_net_profit(self):
