@@ -23,7 +23,6 @@ class Testwise:
         self.trailing_stop_activation_ratio = trailing_stop_activation_ratio
 
         self.equity = initial_capital
-        self.cash = initial_capital
 
         self.net_profit = 0
         self.gross_profit = 0
@@ -91,10 +90,7 @@ class Testwise:
             self.positions.append(position)
 
             if self.commission != 0:
-                self.cash = self.cash - (adjusted_price * share) - (adjusted_price * share * self.commission)
                 self.equity = self.equity - (adjusted_price * share * self.commission)
-            else:
-                self.cash = self.cash - (adjusted_price * share) - (adjusted_price * share)
 
             self.total_trades = self.total_trades + 1
             self.current_open_pos = copy.copy(position)
@@ -119,7 +115,6 @@ class Testwise:
             self.positions.append(position)
 
             self.equity = self.equity + ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
-            self.cash = self.cash + ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
 
             if adjusted_price - self.current_open_pos["price"] > 0:
                 self.gross_profit = self.gross_profit + ((adjusted_price - self.current_open_pos["price"]) * share)
@@ -181,10 +176,7 @@ class Testwise:
             self.positions.append(position)
 
             if self.commission != 0:
-                self.cash = self.cash - (adjusted_price * share) - (adjusted_price * share * self.commission)
                 self.equity = self.equity - (adjusted_price * share * self.commission)
-            else:
-                self.cash = self.cash - (adjusted_price * share) - (adjusted_price * share)
 
             self.total_trades = self.total_trades + 1
             self.current_open_pos = copy.copy(position)
@@ -209,7 +201,6 @@ class Testwise:
             self.positions.append(position)
 
             self.equity = self.equity - ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
-            self.cash = self.cash - ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
 
             if adjusted_price - self.current_open_pos["price"] < 0:
                 self.gross_profit = self.gross_profit + abs(((adjusted_price - self.current_open_pos["price"]) * share))
