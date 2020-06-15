@@ -10,7 +10,7 @@ class Testwise:
     def __init__(
             self, initial_capital=100000, commission=0, slippage=0, risk_factor=1.5,
             limit_factor=1, position_risk=0.02, use_margin=True, margin_factor=3,
-            use_trailing_stop=False, trailing_stop_activation_ratio=2):
+            use_trailing_stop=False, trailing_stop_activation_ratio=2, dynamic_positioning=False):
         self.initial_capital = initial_capital
         self.commission = commission
         self.slippage = slippage
@@ -21,6 +21,7 @@ class Testwise:
         self.margin_factor = margin_factor
         self.use_trailing_stop = use_trailing_stop
         self.trailing_stop_activation_ratio = trailing_stop_activation_ratio
+        self.dynamic_positioning = dynamic_positioning
 
         self.equity = initial_capital
 
@@ -42,19 +43,24 @@ class Testwise:
         self.current_open_pos = None
         self.positions = []
 
-    def calculate_share(self, current_atr):
+    def calculate_share(self, current_atr, custom_position_risk=0.02):
         """Calculates how many shares to buy in nnfx way
 
         Arguments:
             current_atr {float} -- atr
-            current_atr_pips {float} -- atr in pips
+            custom_position_risk {float} -- custom position risk ratio
 
         Returns:
             float -- shares to buy
         """
-        risk = self.equity * self.position_risk
-        share = risk / (self.risk_factor * current_atr)
-        return share
+        if not self.dynamic_positioning:
+            risk = self.equity * self.position_risk
+            share = risk / (self.risk_factor * current_atr)
+            return share
+        else:
+            risk = self.equity * custom_position_risk
+            share = risk / (self.risk_factor * current_atr)
+            return share
 
     def entry_long(self, date, price, share, current_atr):
         """Opening a long position
