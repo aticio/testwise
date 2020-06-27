@@ -76,7 +76,7 @@ class Testwise:
 
             if self.use_margin:
                 if adjusted_price * share > self.equity * self.margin_factor:
-                    share = ((self.equity * self.margin_factor) - (self.equity * self.position_risk))  / adjusted_price
+                    share = (self.equity * self.margin_factor)  / adjusted_price
             else:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
@@ -161,8 +161,8 @@ class Testwise:
             adjusted_price = price - self.slippage
 
             if self.use_margin:
-                if adjusted_price * share > self.equity * self.margin_factor:
-                    share = ((self.equity * self.margin_factor) - (self.equity * self.position_risk))  / adjusted_price
+                if adjusted_price * share > self.equity * (self.margin_factor - 1):
+                    share = (self.equity * self.margin_factor)  / adjusted_price
             else:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
