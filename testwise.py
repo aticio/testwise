@@ -162,7 +162,7 @@ class Testwise:
 
             if self.use_margin:
                 if adjusted_price * share > self.equity * (self.margin_factor - 1):
-                    share = (self.equity * self.margin_factor)  / adjusted_price
+                    share = (self.equity * (self.margin_factor - 1))  / adjusted_price
             else:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
