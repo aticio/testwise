@@ -234,10 +234,22 @@ class Testwise:
         else:
             print("No position to exit")
 
-    def break_even(self):
+    def break_even(self, adjust_level=False, tpratio=0.5, slippage=0):
         """Change stop loss level to break even. This function could be used after take profit.
         """
-        self.current_open_pos["sl"] = self.current_open_pos["price"]
+        if not adjust_level:
+            self.current_open_pos["sl"] = self.current_open_pos["price"]
+        else:
+            if self.pos == 1:
+                self.current_open_pos["sl"] = self.current_open_pos["price"] \
+                    + (self.current_open_pos["price"] * self.current_open_pos["qty"] * self.commission) \
+                    + (self.current_open_pos["tp"] * (self.current_open_pos["qty"] * tpratio) * self.commission) \
+                    + (2 * slippage)
+            elif self.pos == -1:
+                self.current_open_pos["sl"] = self.current_open_pos["price"] \
+                    - (self.current_open_pos["price"] * self.current_open_pos["qty"] * self.commission) \
+                    - (self.current_open_pos["tp"] * (self.current_open_pos["qty"] * tpratio) * self.commission) \
+                    - (2 * slippage)
 
     def set_trailing_stop(self, price, ts_atr):
         """Setting trailing stop
