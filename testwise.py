@@ -274,9 +274,9 @@ class Testwise:
             "gross_profit": self.gross_profit, "gross_loss": self.gross_loss, "max_drawdown": self.max_drawdown,
             "max_drawdown_rate": self.get_max_drawdown_rate(), "win_rate": self.get_win_rate(),
             "risk_reward_ratio": self.get_risk_reward_ratio(), "profit_factor": self.get_profit_factor(),
-            "return_on_capital": self.get_return_on_capital(), "max_capital_required": self.get_max_capital_required(),
-            "total_trades": self.total_trades, "number_of_winning_trades": self.number_of_winning_traders,
-            "sortino_ratio": self.get_sortino_ratio(), "number_of_losing_trades": self.number_of_losing_trades,
+            "ehlers_ratio": self.get_ehlers_ratio(), "return_on_capital": self.get_return_on_capital(),
+            "max_capital_required": self.get_max_capital_required(), "total_trades": self.total_trades, 
+            "number_of_winning_trades": self.number_of_winning_traders, "number_of_losing_trades": self.number_of_losing_trades, 
             "largest_winning_trade": self.get_largest_winning_trade(), "largest_losing_trade": self.get_largest_losing_trade()}
         return result
 
@@ -414,6 +414,15 @@ class Testwise:
                 if nprf < minnpr[1]:
                     minnpr = self.net_profit_record[i]
         return minnpr
+
+    def get_ehlers_ratio(self):
+        """Calculates ratio given by Ehlers, for choosing best optimization results
+
+        Returns:
+            float -- ehlers ration
+        """
+        ehlers_ratio = (2 * self.get_win_rate() - 1) * self.get_profit_factor()
+        return ehlers_ratio
 
     def write_trades_to_csv(self, name="trades"):
         """Write all transactions to a csv file
