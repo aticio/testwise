@@ -421,7 +421,7 @@ class Testwise:
         Returns:
             float -- ehlers ration
         """
-        ehlers_ratio = (2 * self.get_win_rate() - 1) * self.get_profit_factor()
+        ehlers_ratio = (2 * (self.get_win_rate() / 100) - 1) * self.get_profit_factor()
         return ehlers_ratio
 
     def write_trades_to_csv(self, name="trades"):
