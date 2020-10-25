@@ -329,6 +329,12 @@ class Testwise:
         Returns:
             float -- risk reward ratio
         """
+        if self.number_of_losing_trades == 0:
+            self.number_of_losing_trades = 0.0001
+        
+        if self.number_of_winning_traders == 0:
+            self.number_of_winning_traders = 0.0001
+        
         risk = self.gross_profit / self.number_of_winning_traders
         reward = self.gross_loss / self.number_of_losing_trades
         return risk / reward
