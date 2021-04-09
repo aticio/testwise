@@ -62,6 +62,17 @@ class Testwise:
             share = risk / (self.risk_factor * current_atr)
             return share
 
+    def calculate_share_static(self, difference, custom_position_risk=0.02):
+        """Calculates how many shares to buy with given price difference from entry to stop loss
+
+        Args:
+            difference (float): price difference from entry to stop loss
+            custom_position_risk (float, optional): Custom position risk ratio. Defaults to 0.02.
+        """
+        risk = self.equity * custom_position_risk
+        share = risk / (difference)
+        return share
+
     def entry_long(self, date, price, share, current_atr):
         """Opening a long position
 
@@ -134,7 +145,7 @@ class Testwise:
             self.net_profit_record.append((date, self.equity - self.initial_capital))
             self.net_profit = self.equity - self.initial_capital
             self.__update_drawdown_record()
-            self.sortino_record.append((adjusted_price - self.current_open_pos["price"]) * share)
+            self.sortino_record.append((date, (adjusted_price - self.current_open_pos["price"]) * share))
             self.max_drawdown = self.get_max_drawdown()
 
             if self.current_open_pos["qty"] == share:
@@ -220,7 +231,7 @@ class Testwise:
             self.net_profit_record.append((date, self.equity - self.initial_capital))
             self.net_profit = self.equity - self.initial_capital
             self.__update_drawdown_record()
-            self.sortino_record.append((price - self.current_open_pos["price"]) * share)
+            self.sortino_record.append((date, (adjusted_price - self.current_open_pos["price"]) * share))
             self.max_drawdown = self.get_max_drawdown()
 
             if self.current_open_pos["qty"] == share:
@@ -381,17 +392,20 @@ class Testwise:
         Returns:
             float -- sortino ratio
         """
-        mean_return = sum(self.sortino_record) / len(self.sortino_record)
+        # mean_return = sum(self.sortino_record) / len(self.sortino_record)
 
-        downside = []
-        for dws in self.sortino_record:
-            if dws < 0:
-                downside.append(dws)
+        # downside = []
+        # for dws in self.sortino_record:
+        #     if dws < 0:
+        #         downside.append(dws)
 
-        downside_std = statistics.stdev(downside)
+        # downside_std = statistics.stdev(downside)
 
-        sortino = mean_return / downside_std
-        return sortino
+        # sortino = mean_return / downside_std
+        # return sortino
+
+        print(self.sortino_record)
+
 
     def get_largest_winning_trade(self):
         """Largest winning trade
