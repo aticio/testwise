@@ -1,5 +1,4 @@
 """Testwise"""
-import statistics
 import csv
 import copy
 import matplotlib.pyplot as plt
@@ -286,8 +285,8 @@ class Testwise:
             "max_drawdown_rate": self.get_max_drawdown_rate(), "win_rate": self.get_win_rate(),
             "risk_reward_ratio": self.get_risk_reward_ratio(), "profit_factor": self.get_profit_factor(),
             "ehlers_ratio": self.get_ehlers_ratio(), "return_on_capital": self.get_return_on_capital(),
-            "max_capital_required": self.get_max_capital_required(), "total_trades": self.total_trades, 
-            "number_of_winning_trades": self.number_of_winning_traders, "number_of_losing_trades": self.number_of_losing_trades, 
+            "max_capital_required": self.get_max_capital_required(), "total_trades": self.total_trades,
+            "number_of_winning_trades": self.number_of_winning_traders, "number_of_losing_trades": self.number_of_losing_trades,
             "largest_winning_trade": self.get_largest_winning_trade(), "largest_losing_trade": self.get_largest_losing_trade()}
         return result
 
@@ -342,10 +341,10 @@ class Testwise:
         """
         if self.number_of_losing_trades == 0:
             self.number_of_losing_trades = 0.0001
-        
+
         if self.number_of_winning_traders == 0:
             self.number_of_winning_traders = 0.0001
-        
+
         risk = self.gross_profit / self.number_of_winning_traders
         reward = self.gross_loss / self.number_of_losing_trades
         return risk / reward
