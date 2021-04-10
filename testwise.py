@@ -386,6 +386,8 @@ class Testwise:
         Returns:
             float -- profit factor
         """
+        if self.gross_loss == 0:
+            self.gross_loss = 0.0001
         profit_factor = self.gross_profit / self.gross_loss
         return profit_factor
 
