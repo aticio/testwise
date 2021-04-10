@@ -1,5 +1,4 @@
 """Testwise"""
-import statistics
 import csv
 import copy
 import matplotlib.pyplot as plt
@@ -37,7 +36,6 @@ class Testwise:
 
         self.net_profit_record = []
         self.max_drawdown_record = []
-        self.sortino_record = []
 
         self.pos = 0
         self.current_open_pos = None
@@ -145,7 +143,6 @@ class Testwise:
             self.net_profit_record.append((date, self.equity - self.initial_capital))
             self.net_profit = self.equity - self.initial_capital
             self.__update_drawdown_record()
-            self.sortino_record.append((adjusted_price - self.current_open_pos["price"]) * share)
             self.max_drawdown = self.get_max_drawdown()
 
             if self.current_open_pos["qty"] == share:
@@ -231,7 +228,6 @@ class Testwise:
             self.net_profit_record.append((date, self.equity - self.initial_capital))
             self.net_profit = self.equity - self.initial_capital
             self.__update_drawdown_record()
-            self.sortino_record.append((price - self.current_open_pos["price"]) * share)
             self.max_drawdown = self.get_max_drawdown()
 
             if self.current_open_pos["qty"] == share:
@@ -393,24 +389,6 @@ class Testwise:
             self.gross_loss = 0.0001
         profit_factor = self.gross_profit / self.gross_loss
         return profit_factor
-
-    def get_sortino_ratio(self):
-        """Calculates sortino ratio
-
-        Returns:
-            float -- sortino ratio
-        """
-        mean_return = sum(self.sortino_record) / len(self.sortino_record)
-
-        downside = []
-        for dws in self.sortino_record:
-            if dws < 0:
-                downside.append(dws)
-
-        downside_std = statistics.stdev(downside)
-
-        sortino = mean_return / downside_std
-        return sortino
 
     def get_largest_winning_trade(self):
         """Largest winning trade
