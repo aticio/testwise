@@ -361,7 +361,7 @@ class Testwise:
         Returns:
             float -- win rate
         """
-        if len(self.total_trades) > 0:
+        if self.total_trades > 0:
             win_rate = (self.number_of_winning_traders * 100) / self.total_trades
             return win_rate
         else:
