@@ -315,11 +315,14 @@ class Testwise:
         Returns:
             float -- maximum drawdown
         """
-        maxddr = self.max_drawdown_record[0]
-        for mdr in self.max_drawdown_record:
-            if mdr[2] < maxddr[2]:
-                maxddr = mdr
-        return maxddr[2]
+        if len(self.max_drawdown_record) > 0:
+            maxddr = self.max_drawdown_record[0]
+            for mdr in self.max_drawdown_record:
+                if mdr[2] < maxddr[2]:
+                    maxddr = mdr
+            return maxddr[2]
+        else:
+            return 0.0
 
     def get_max_drawdown_rate(self):
         """Calculates rate of maximum drawdown
