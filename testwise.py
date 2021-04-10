@@ -361,8 +361,11 @@ class Testwise:
         Returns:
             float -- win rate
         """
-        win_rate = (self.number_of_winning_traders * 100) / self.total_trades
-        return win_rate
+        if len(self.total_trades) > 0:
+            win_rate = (self.number_of_winning_traders * 100) / self.total_trades
+            return win_rate
+        else:
+            return 0.0
 
     def get_max_capital_required(self):
         """Calculates maximum capital required for the strategy
