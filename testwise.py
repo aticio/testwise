@@ -306,9 +306,12 @@ class Testwise:
         Returns:
             float -- net profit percent value
         """
-        npr = self.net_profit_record[-1]
-        npp = self.__calculate_percent(npr[1], self.initial_capital)
-        return npp
+        if len(self.net_profit_record) > 0:
+            npr = self.net_profit_record[-1]
+            npp = self.__calculate_percent(npr[1], self.initial_capital)
+            return npp
+        else:
+            return 0.0
 
     def get_max_drawdown(self):
         """Calculates maximum drawdown
