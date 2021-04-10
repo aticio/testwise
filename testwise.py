@@ -402,13 +402,16 @@ class Testwise:
         Returns:
             tuple -- date and value of largest winning trade
         """
-        maxnpr = self.net_profit_record[0]
-        for i in range(0, len(self.net_profit_record)):
-            if i > 0:
-                nprf = self.net_profit_record[i][1] - self.net_profit_record[i-1][1]
-                if nprf > maxnpr[1]:
-                    maxnpr = self.net_profit_record[i]
-        return maxnpr
+        if len(self.net_profit_record) > 0:
+            maxnpr = self.net_profit_record[0]
+            for i in range(0, len(self.net_profit_record)):
+                if i > 0:
+                    nprf = self.net_profit_record[i][1] - self.net_profit_record[i-1][1]
+                    if nprf > maxnpr[1]:
+                        maxnpr = self.net_profit_record[i]
+            return maxnpr
+        else:
+            return None
 
     def get_largest_losing_trade(self):
         """Largest losing trade
@@ -416,13 +419,16 @@ class Testwise:
         Returns:
             tuple -- date and value of largest losing trade
         """
-        minnpr = self.net_profit_record[0]
-        for i in range(0, len(self.net_profit_record)):
-            if i > 0:
-                nprf = self.net_profit_record[i][1] - self.net_profit_record[i-1][1]
-                if nprf < minnpr[1]:
-                    minnpr = self.net_profit_record[i]
-        return minnpr
+        if len(self.net_profit_record) > 0:
+            minnpr = self.net_profit_record[0]
+            for i in range(0, len(self.net_profit_record)):
+                if i > 0:
+                    nprf = self.net_profit_record[i][1] - self.net_profit_record[i-1][1]
+                    if nprf < minnpr[1]:
+                        minnpr = self.net_profit_record[i]
+            return minnpr
+        else:
+            return None
 
     def get_ehlers_ratio(self):
         """Calculates ratio given by Ehlers, for choosing best optimization results
