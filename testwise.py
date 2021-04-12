@@ -443,7 +443,7 @@ class Testwise:
     def get_pearsons_r(self):
         """Calculate pearsons r for net profit record.
         """
-        if len(net_profit_record) > 0:
+        if len(self.net_profit_record) > 0:
             npr = []
             for i, _ in enumerate(self.net_profit_record):
                 npr.append(i[1])
