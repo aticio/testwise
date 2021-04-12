@@ -2,6 +2,7 @@
 import csv
 import copy
 import matplotlib.pyplot as plt
+from scipy import stats
 
 class Testwise:
     """Testwise initialization class
@@ -282,7 +283,7 @@ class Testwise:
             "max_drawdown_rate": self.get_max_drawdown_rate(), "win_rate": self.get_win_rate(),
             "risk_reward_ratio": self.get_risk_reward_ratio(), "profit_factor": self.get_profit_factor(),
             "ehlers_ratio": self.get_ehlers_ratio(), "return_on_capital": self.get_return_on_capital(),
-            "max_capital_required": self.get_max_capital_required(), "total_trades": self.total_trades,
+            "max_capital_required": self.get_max_capital_required(), "total_trades": self.total_trades, "pearsonsr": self.get_pearsons_r(),
             "number_of_winning_trades": self.number_of_winning_traders, "number_of_losing_trades": self.number_of_losing_trades,
             "largest_winning_trade": self.get_largest_winning_trade(), "largest_losing_trade": self.get_largest_losing_trade()}
         return result
@@ -438,6 +439,23 @@ class Testwise:
         """
         ehlers_ratio = (2 * (self.get_win_rate() / 100) - 1) * self.get_profit_factor()
         return ehlers_ratio
+
+    def get_pearsons_r(self):
+        """Calculate pearsons r for net profit record.
+        """
+        if len(net_profit_record) > 0:
+            npr = []
+            for i, _ in enumerate(self.net_profit_record):
+                npr.append(i[1])
+
+            x = range(0, len(npr))
+
+            psrs = stats.pearsonr(x, npr)
+            return psrs
+        else:
+            return -1
+
+
 
     def write_trades_to_csv(self, name="trades"):
         """Write all transactions to a csv file
