@@ -445,8 +445,8 @@ class Testwise:
         """
         if len(self.net_profit_record) > 0:
             npr = []
-            for i, _ in enumerate(self.net_profit_record):
-                npr.append(i[1])
+            for _, k in enumerate(self.net_profit_record):
+                npr.append(k[1])
 
             x = range(0, len(npr))
 
@@ -454,8 +454,6 @@ class Testwise:
             return psrs
         else:
             return -1
-
-
 
     def write_trades_to_csv(self, name="trades"):
         """Write all transactions to a csv file
