@@ -451,7 +451,7 @@ class Testwise:
             x = range(0, len(npr))
 
             psrs = stats.pearsonr(x, npr)
-            return psrs
+            return psrs[0]
         else:
             return -1
 
