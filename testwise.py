@@ -1,8 +1,9 @@
-"""Testwise"""
+# flake8: noqa
 import csv
 import copy
 import matplotlib.pyplot as plt
 from scipy import stats
+
 
 class Testwise:
     """Testwise initialization class
@@ -42,15 +43,16 @@ class Testwise:
         self.current_open_pos = None
         self.positions = []
 
+
     def calculate_share(self, current_atr, custom_position_risk=0.02):
-        """Calculates how many shares to buy in nnfx way
+        """Calculates how many shares to buy (share = risk / (risk_factor * atr))
 
-        Arguments:
-            current_atr {float} -- atr
-            custom_position_risk {float} -- custom position risk ratio
-
-        Returns:
-            float -- shares to buy
+        :param current_atr: atr
+        :type current_atr: float
+        :param custom_position_risk: custom position risk ratio, defaults to 0.02
+        :type custom_position_risk: float, optional
+        :return: share
+        :rtype: float
         """
         if not self.dynamic_positioning:
             risk = self.equity * self.position_risk
@@ -61,32 +63,40 @@ class Testwise:
             share = risk / (self.risk_factor * current_atr)
             return share
 
+
     def calculate_share_static(self, difference, custom_position_risk=0.02):
         """Calculates how many shares to buy with given price difference from entry to stop loss
 
-        Args:
-            difference (float): price difference from entry to stop loss
-            custom_position_risk (float, optional): Custom position risk ratio. Defaults to 0.02.
+        :param difference: price difference from entry to stop loss
+        :type difference: float
+        :param custom_position_risk: custom position risk ratio, defaults to 0.02
+        :type custom_position_risk: float, optional
+        :return: share
+        :rtype: float
         """
         risk = self.equity * custom_position_risk
         share = risk / (difference)
         return share
 
+
     def entry_long(self, date, price, share, current_atr):
         """Opening a long position
 
-        Arguments:
-            date {string} -- date of entry
-            price {float} -- opening price of position
-            share {float} -- number of shares to buy
-            current_atr {float} -- atr to define take profit and stop loss
-            """
+        :param date: date of entry
+        :type date: string
+        :param price: opening price of position
+        :type price: float
+        :param share: number of shares to buy
+        :type share: float
+        :param current_atr: atr to define take profit and stop loss
+        :type current_atr: float
+        """
         if self.current_open_pos is None:
             adjusted_price = price + self.slippage
 
             if self.use_margin:
                 if adjusted_price * share > self.equity * self.margin_factor:
-                    share = (self.equity * self.margin_factor)  / adjusted_price
+                    share = (self.equity * self.margin_factor) / adjusted_price
             else:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
@@ -114,20 +124,22 @@ class Testwise:
         else:
             print("Position already open")
 
+
     def exit_long(self, date, price, share, tptaken=False):
         """Closing a long position
 
-        Arguments:
-            date {string} -- date of closing
-            price {float} -- closing price of position
-            share {float} -- number of shares to sell
-
-        Keyword Arguments:
-            tptaken {bool} -- True if take profit is taken with this particular transaction (default: {False})
+        :param date: date of closing
+        :type date: string
+        :param price: closing price of position
+        :type price: float
+        :param share: number of shares to sell
+        :type share: float
+        :param tptaken: True if take profit is taken with this particular transaction, defaults to False
+        :type tptaken: bool, optional
         """
         if self.current_open_pos is not None:
             adjusted_price = price - self.slippage
-            position = {"type": "exit long", "date":date, "price": price, "adj_price": adjusted_price, "qty": share}
+            position = {"type": "exit long", "date": date, "price": price, "adj_price": adjusted_price, "qty": share}
             self.positions.append(position)
 
             self.equity = self.equity + ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
@@ -157,21 +169,25 @@ class Testwise:
         else:
             print("No position to exit")
 
+
     def entry_short(self, date, price, share, current_atr):
         """Opening a short position
 
-        Arguments:
-            date {string} -- date of entry
-            price {float} -- opening price of position
-            share {float} -- number of shares to short
-            current_atr {float} -- atr to define take profit and stop loss
-            """
+        :param date: date of entry
+        :type date: string
+        :param price: opening price of position
+        :type price: float
+        :param share: number of shares to short
+        :type share: float
+        :param current_atr: atr to define take profit and stop loss
+        :type current_atr: float
+        """
         if self.current_open_pos is None:
             adjusted_price = price - self.slippage
 
             if self.use_margin:
                 if adjusted_price * share > self.equity * (self.margin_factor - 1):
-                    share = (self.equity * (self.margin_factor - 1))  / adjusted_price
+                    share = (self.equity * (self.margin_factor - 1)) / adjusted_price
             else:
                 if adjusted_price * share > self.equity:
                     share = self.equity / adjusted_price
@@ -199,20 +215,22 @@ class Testwise:
         else:
             print("Position already open")
 
+
     def exit_short(self, date, price, share, tptaken=False):
         """Closing a short position
 
-        Arguments:
-            date {string} -- date of closing
-            price {float} -- closing price of position
-            share {float} -- number of shares to short-sell
-
-        Keyword Arguments:
-            tptaken {bool} -- True if take profit is taken with this particular transaction (default: {False})
+        :param date: date of closing
+        :type date: string
+        :param price: closing price of position
+        :type price: float
+        :param share: number of shares to short-sell
+        :type share: float
+        :param tptaken: True if take profit is taken with this particular transaction, defaults to False
+        :type tptaken: bool, optional
         """
         if self.current_open_pos is not None:
             adjusted_price = price + self.slippage
-            position = {"type": "exit short", "date":date, "price": price, "adj_price": adjusted_price, "qty": share}
+            position = {"type": "exit short", "date": date, "price": price, "adj_price": adjusted_price, "qty": share}
             self.positions.append(position)
 
             self.equity = self.equity - ((adjusted_price - self.current_open_pos["price"]) * share) - (adjusted_price * share * self.commission)
@@ -242,6 +260,7 @@ class Testwise:
         else:
             print("No position to exit")
 
+
     def break_even(self, adjust_level=False, tpratio=0.5, slippage=0):
         """Change stop loss level to break even. This function could be used after take profit.
         """
@@ -259,23 +278,26 @@ class Testwise:
                     - (self.current_open_pos["tp"] * (self.current_open_pos["qty"] * tpratio) * self.commission) \
                     - (2 * slippage)
 
+
     def set_trailing_stop(self, price, ts_atr):
         """Setting trailing stop
 
-        Args:
-            price (float): close price when trailing stop level reached
-            ts_atr (float): atr value of position opening
+        :param price: close price when trailing stop level reached
+        :type price: float
+        :param ts_atr: atr value of position opening
+        :type ts_atr: float
         """
         if self.pos == 1:
             self.current_open_pos["sl"] = price - ts_atr
         elif self.pos == -1:
             self.current_open_pos["sl"] = price + ts_atr
 
+
     def get_result(self):
         """Generates backtest results
 
-        Returns:
-            dictionary -- a dictionary of backtest results including various ratios.
+        :return: a dictionary of backtest results including various ratios.
+        :rtype: dictionary
         """
         result = {
             "net_profit": self.net_profit, "net_profit_percent": self.get_net_profit_percent(),
@@ -288,20 +310,23 @@ class Testwise:
             "largest_winning_trade": self.get_largest_winning_trade(), "largest_losing_trade": self.get_largest_losing_trade()}
         return result
 
+
     def get_net_profit(self):
         """Net profit
 
-        Returns:
-            float -- net profit
+        :return: net profit
+        :rtype: float
         """
         npr = self.net_profit_record[-1]
-        return npr[1]
+        net_profit = npr[1]
+        return net_profit
+
 
     def get_net_profit_percent(self):
         """Net profit percent value
 
-        Returns:
-            float -- net profit percent value
+        :return: net profit percent value
+        :rtype: float
         """
         if len(self.net_profit_record) > 0:
             npr = self.net_profit_record[-1]
@@ -310,11 +335,12 @@ class Testwise:
         else:
             return 0.0
 
+
     def get_max_drawdown(self):
         """Calculates maximum drawdown
 
-        Returns:
-            float -- maximum drawdown
+        :return: maximum drawdown
+        :rtype: float
         """
         if len(self.max_drawdown_record) > 0:
             maxddr = self.max_drawdown_record[0]
@@ -325,11 +351,12 @@ class Testwise:
         else:
             return 0.0
 
+
     def get_max_drawdown_rate(self):
         """Calculates rate of maximum drawdown
 
-        Returns:
-            float -- rate of maximum drawdown
+        :return: rate of maximum drawdown
+        :rtype: float
         """
         if self.get_max_drawdown() == 0:
             return 0
@@ -337,11 +364,12 @@ class Testwise:
             mddr = self.net_profit / abs(self.get_max_drawdown())
             return mddr
 
+
     def get_risk_reward_ratio(self):
         """Calculates risk reward ratio
 
-        Returns:
-            float -- risk reward ratio
+        :return: risk reward ratio
+        :rtype: float
         """
         if self.number_of_losing_trades == 0:
             self.number_of_losing_trades = 0.0001
@@ -356,11 +384,12 @@ class Testwise:
             reward = 0.0001
         return risk / reward
 
+
     def get_win_rate(self):
         """Calculates win rate
 
-        Returns:
-            float -- win rate
+        :return: win rate
+        :rtype: float
         """
         if self.total_trades > 0:
             win_rate = (self.number_of_winning_traders * 100) / self.total_trades
@@ -368,40 +397,44 @@ class Testwise:
         else:
             return 0.0
 
+
     def get_max_capital_required(self):
         """Calculates maximum capital required for the strategy
 
-        Returns:
-            float -- maximum capital required
+        :return: maximum capital required
+        :rtype: float
         """
         mcr = self.initial_capital + abs(self.get_max_drawdown())
         return mcr
 
+
     def get_return_on_capital(self):
         """Calculates return on capital
 
-        Returns:
-            float -- return on capital
+        :return:  return on capital
+        :rtype: float
         """
         roc = self.net_profit / self.get_max_capital_required()
         return roc
 
+
     def get_profit_factor(self):
         """Calculates profit factor
 
-        Returns:
-            float -- profit factor
+        :return: profit factor
+        :rtype: float
         """
         if self.gross_loss == 0:
             self.gross_loss = 0.0001
         profit_factor = self.gross_profit / self.gross_loss
         return profit_factor
 
+
     def get_largest_winning_trade(self):
         """Largest winning trade
 
-        Returns:
-            tuple -- date and value of largest winning trade
+        :return: date and value of largest winning trade
+        :rtype: tuple
         """
         if len(self.net_profit_record) > 0:
             maxnpr = self.net_profit_record[0]
@@ -414,11 +447,12 @@ class Testwise:
         else:
             return None
 
+
     def get_largest_losing_trade(self):
         """Largest losing trade
 
-        Returns:
-            tuple -- date and value of largest losing trade
+        :return: date and value of largest losing trade
+        :rtype: tuple
         """
         if len(self.net_profit_record) > 0:
             minnpr = self.net_profit_record[0]
@@ -431,14 +465,16 @@ class Testwise:
         else:
             return None
 
+
     def get_ehlers_ratio(self):
         """Calculates ratio given by Ehlers, for choosing best optimization results
 
-        Returns:
-            float -- ehlers ration
+        :return: [description]ehlers ration
+        :rtype: float
         """
         ehlers_ratio = (2 * (self.get_win_rate() / 100) - 1) * self.get_profit_factor()
         return ehlers_ratio
+
 
     def get_pearsons_r(self):
         """Calculate pearsons r for net profit record.
@@ -455,11 +491,12 @@ class Testwise:
         else:
             return -1
 
+
     def write_trades_to_csv(self, name="trades"):
         """Write all transactions to a csv file
 
-        Keyword Arguments:
-            name {str} -- name of the csv file (default: {"trades"})
+        :param name: name of the csv file, defaults to "trades"
+        :type name: str, optional
         """
         file = open(name + ".csv", "w", newline="")
         with file:
@@ -470,11 +507,13 @@ class Testwise:
             for trade in self.positions:
                 writer.writerow(trade)
 
+
     def draw_net_profit_graph(self):
         """Draws net profit graph
         """
         plt.plot(*zip(*self.net_profit_record))
         plt.show()
+
 
     def print_out_all_positions(self):
         """Prints out all trades line by line
@@ -482,11 +521,9 @@ class Testwise:
         for pos in self.positions:
             print(pos)
 
+
     def __update_drawdown_record(self):
         """Records drawdon to calculate maximum drawdown
-
-        Arguments:
-            date {string} -- date of drawdown
         """
         maxnp = self.net_profit_record[0]
         for npr in self.net_profit_record:
@@ -494,14 +531,15 @@ class Testwise:
                 maxnp = npr
         self.max_drawdown_record.append((maxnp[0], self.net_profit_record[-1][0], self.net_profit_record[-1][-1] - maxnp[1]))
 
+
     def __calculate_percent(self, nominator, denominator):
         """Calculates percent value with given nominator and denominator
 
-        Arguments:
-            nominator {float} -- nominator
-            denominator {float} -- denominator
-
-        Returns:
-            float -- percent value
+        :param nominator: nominator
+        :type nominator: float
+        :param denominator: denominator
+        :type denominator: float
+        :return: percent value
+        :rtype: float
         """
         return (100 * nominator) / denominator
