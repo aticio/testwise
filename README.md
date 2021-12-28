@@ -7,7 +7,10 @@ A backtester (backtest helper) for testing my trading strategies.
 ## Example Usage
 Note: Explanatory comments will be updated soon.
 ```python
-# This is a backtesting example of Exponantial Moving Average cross strategy. There is 1.5 ATR stop loss level and 1 ATR take profit level for every position. Commission rate is 0.1000%. Margin usage is allowed up to 5 times the main capital.
+# This is a backtesting example of Exponantial Moving Average cross strategy. 
+# There is 1.5 ATR stop loss level and 1 ATR take profit level for every position. 
+# Commission rate is 0.1000%. 
+# Margin usage is allowed up to 5 times the main capital.
 from datetime import datetime, timedelta
 from testwise import Testwise
 import requests
