@@ -106,8 +106,8 @@ def backtest(start_time, end_time):
             # When the dynamic_positioning is set to True, 
             # the backtester will work as if the margin usage is available for use.
             # margin_factor indicates the margin ratio. (In this example, it is 5 times the main capital)
-            # limit_factor is an ATR based take profit level. (In this example, it is 1 ATR from the position price)
-            # risk_factor is an ATR based stop loss level. (In this example, it is 1.5 ATR from the position price)
+            # limit_factor is an ATR based take profit level. (it is 1 ATR from the position price)
+            # risk_factor is an ATR based stop loss level. (it is 1.5 ATR from the position price)
             twise = Testwise(
                 commission=COMMISSION,
                 dynamic_positioning=DYNAMIC_POSITIONING,
@@ -124,7 +124,8 @@ def backtest(start_time, end_time):
             ema_second = ema_second[-lookback:]
 
             # Notice that at this point:
-            # open, high, low, close, ema_first and ema_second lists are all trimmed and all have the same length
+            # open, high, low, close, ema_first and ema_second lists are all trimmed
+            #  and all have the same length
             # Ready for testing
 
             # Start walking on the data taken from the binance.
@@ -142,8 +143,10 @@ def backtest(start_time, end_time):
                     # Below, if the current position is long (1 means long) and
                     # the ema_first crosses below the ema_second, position exit function triggered
                     if twise.pos == 1 and (ema_first[i] < ema_second[i]):
-                        # exit_long function takes closing date, closing price as open price of next day opn[i + 1],
-                        # and amount to close the position. This amount already kept in twise.current_open_pos["qty"].
+                        # exit_long function takes closing date, 
+                        # closing price as open price of next day opn[i + 1],
+                        # and amount to close the position. 
+                        # This amount already kept in twise.current_open_pos["qty"].
                         # This value is set when opening the positions
                         twise.exit_long(date_close, opn[i + 1], twise.current_open_pos["qty"])
 
@@ -151,21 +154,23 @@ def backtest(start_time, end_time):
                     if twise.pos == -1 and (ema_first[i] > ema_second[i]):
                         twise.exit_short(date_close, opn[i + 1], twise.current_open_pos["qty"])
 
-                    # The following if condition simulates price movements inside the bar. This is crucial if you want
-                    # to add take profit and stop loss logic to the backtester.
+                    # The following if condition simulates price movements inside the bar. 
+                    # This is crucial if you want to add take profit and stop loss logic to the backtester.
                     # This pine script broker emulator documentation will explain this condition more clearly:
                     # https://www.tradingview.com/pine-script-docs/en/v5/concepts/Strategies.html?highlight=strategy#broker-emulator
                     if abs(high[i] - opn[i]) < abs(low[i] - opn[i]):
-                        # Simply, If the bar’s high is closer to bar’s open than the bar’s low, bar movement will be like: 
+                        # Simply, If the bar’s high is closer to bar’s open than the bar’s low, 
+                        # bar movement will be like: 
                         # open - high - low - close
 
-                        # In this movement, take profit operation will be checked before stop loss. This is because,
-                        # it is assumed that the price will go up first. 
-                        # For example, if both take profit and stop loss prices are exceeded, it is assumed that
-                        # first, take profit is taken, than stop loss price is reached.
+                        # In this movement, take profit operation will be checked before stop loss. 
+                        # This is because, it is assumed that the price will go up first. 
+                        # For example, if both take profit and stop loss prices are exceeded, 
+                        # it is assumed that first, take profit is taken, than stop loss price is reached.
 
                         # if current position is long, here is take profit logic:
-                        # if current position is long and high is higher than take proift price (twise.current_open_pos["tp"]) 
+                        # if current position is long and high is 
+                        # higher than take proift price (twise.current_open_pos["tp"]) 
                         # and take profit is not taken (twise.current_open_pos["tptaken"] is False)
                         if twise.pos == 1 and high[i] > twise.current_open_pos["tp"] and twise.current_open_pos["tptaken"] is False:
                             # Stop loss price will be set to break even with break_even() function
@@ -175,7 +180,8 @@ def backtest(start_time, end_time):
                             twise.exit_long(date_close, twise.current_open_pos["tp"], twise.current_open_pos["qty"] / 2, True)
 
                         # if current position is long, here is stop loss logic:
-                        # if current position is long and low is lower than stop loss price (twise.current_open_pos["sl"])
+                        # if current position is long and low is 
+                        # lower than stop loss price (twise.current_open_pos["sl"])
                         if twise.pos == 1 and low[i] < twise.current_open_pos["sl"]:
                             twise.exit_long(date_close, twise.current_open_pos["sl"], twise.current_open_pos["qty"])
 
@@ -188,14 +194,17 @@ def backtest(start_time, end_time):
                             twise.break_even()
                             twise.exit_short(date_close, twise.current_open_pos["tp"], twise.current_open_pos["qty"] / 2, True)
                     else:
-                        # If the bar’s low is closer to bar’s open than the bar’s high, bar movement will be like: 
+                        # If the bar’s low is closer to bar’s open than the bar’s high, 
+                        # bar movement will be like: 
                         # open - low - high - close
 
-                        # In this movement, stop loss operation will be checked before take profit. This is because,
-                        # it is assumed that the price will go down firstly. 
-                        # For example, if both take profit and stop loss prices are exceeded, it is assumed that
-                        # first, stop loss is executed, then take profit will never be reached because 
-                        # if the position is fully closed with exit_long twise.pos value will be 0 (which means there is no open position).
+                        # In this movement, stop loss operation will be checked before take profit. 
+                        # This is because, it is assumed that the price will go down firstly. 
+                        # For example, if both take profit and stop loss prices are exceeded,
+                        # it is assumed that first, stop loss is executed, 
+                        # then take profit will never be reached because 
+                        # if the position is fully closed with exit_long, 
+                        # twise.pos value will be 0 (which means there is no open position).
 
                         # if the current position is long, here is stop loss logic:
                         if twise.pos == 1 and low[i] < twise.current_open_pos["sl"]:
@@ -220,18 +229,22 @@ def backtest(start_time, end_time):
                     if twise.pos != 1:
                         # If ema_first crosses over ema_second
                         if ema_first[i] > ema_second[i]:
-                            # You can manually set the amount to open position. But there will be a calculation overhead.
+                            # You can manually set the amount to open position. 
+                            # But there will be a calculation overhead.
                             # Testwise has a built-in share calculation funciton
-                            # In tihs function, share is calculated as: share = (equity * position risk) / (atr * risk factor)
+                            # In tihs function, share is calculated as: 
+                            # share = (equity * position risk) / (atr * risk factor)
                             share = twise.calculate_share(atrng[i], custom_position_risk=0.02)
-                            # Opening long position with opening date (date_open), opening price of next day (opn[i + 1]),
+                            # Opening long position with opening date (date_open), 
+                            # opening price of next day (opn[i + 1]),
                             # amount to buy, and current atr value to define take profit and stop loss prices
                             twise.entry_long(date_open, opn[i + 1], share, atrng[i])
 
                     if twise.pos != -1:
                         if ema_first[i] < ema_second[i]:
                             share = twise.calculate_share(atrng[i], custom_position_risk=0.02)
-                            # Opening short position with opening date (date_open), opening price of next day (opn[i + 1]),
+                            # Opening short position with opening date (date_open), 
+                            # opening price of next day (opn[i + 1]),
                             # amount to buy, and current atr value to define take profit and stop loss prices
                             twise.entry_short(date_open, opn[i + 1], share, atrng[i])
             # get_result() function will give you the backtest results
@@ -270,12 +283,14 @@ Example backtest result:
     'risk_reward_ratio': 1.6350338129618904, 
     'profit_factor': 1.880288884906174, 
     'ehlers_ratio': 0.1311829454585705, 
-    'return_on_capital': 0.26978249297565415, 'max_capital_required': 113265.36511172361, 
+    'return_on_capital': 0.26978249297565415, 
+    'max_capital_required': 113265.36511172361, 
     'total_trades': 43, 
     'pearsonsr': 0.8022110890986095, 
     'number_of_winning_trades': 23, 
     'number_of_losing_trades': 20, 
-    'largest_winning_trade': ('2021-01-23 03', 34417.71907928039), 'largest_losing_trade': ('2020-09-21 03', -4627.351985682239)}
+    'largest_winning_trade': ('2021-01-23 03', 34417.71907928039), 
+    'largest_losing_trade': ('2020-09-21 03', -4627.351985682239)}
 ```
 
 ## Important note: 
