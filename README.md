@@ -4,7 +4,8 @@
 
 A backtester (backtest helper) for testing my trading strategies.
 
-It requires a lot of manual processing and coding. Difficult to comprehend. I tried to explain the use of the library with examples as best I could. But writing such an automation is quite complex.
+It requires a lot of manual processing and coding. Difficult to comprehend. I tried to explain the use of the library with examples as best I could. But writing such automation is quite complex.
+There may still be errors. It is pretty difficult to check but I'm trying to improve the usage.
 
 ## Example Usage
 ```python
