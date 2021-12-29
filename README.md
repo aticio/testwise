@@ -94,7 +94,6 @@ def backtest(start_time, end_time):
             ema_first = ema(close, ema_length1)
             ema_second = ema(close, ema_length2)
             ema_first = ema_first[-lookback:]
-            print(ema_first)
             ema_second = ema_second[-lookback:]
 
             for i, _ in enumerate(data):
