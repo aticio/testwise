@@ -22,7 +22,7 @@ import requests
 from legitindicators import ema, atr
 
 # In this example, daily BTCUSDT kline data is used from binance
-# Let's say you want to backtest your strategy for 180 days.
+# Let's say you want to backtest your strategy for about 450 days.
 # It would be useful to add some extra days to the specified time interval
 # for the indicators to work properly.
 # (For example 10 days of EMA won't be calculated for the first 9 days of time range)
